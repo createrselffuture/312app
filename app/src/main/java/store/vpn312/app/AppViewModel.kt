@@ -130,19 +130,15 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
 
     // ═══════════════════════ вход ═══════════════════════
 
-    private val deviceLabel = "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}".take(100)
-
     fun login(login: String, password: String) = launchBusy {
-        val r = api.post("/auth/login", JSONObject().put("login", login.trim()).put("password", password)
-            .put("device", deviceLabel), auth = false)
+        val r = api.post("/auth/login", JSONObject().put("login", login.trim()).put("password", password), auth = false)
         prefs.token = r.getString("token")
         applyMe(r)
         afterLogin()
     }
 
     fun register(login: String, password: String) = launchBusy {
-        val r = api.post("/auth/register", JSONObject().put("login", login.trim()).put("password", password)
-            .put("device", deviceLabel), auth = false)
+        val r = api.post("/auth/register", JSONObject().put("login", login.trim()).put("password", password), auth = false)
         prefs.token = r.getString("token")
         applyMe(r)
         toast("Аккаунт создан")
@@ -163,7 +159,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun loginByLink(link: String) = launchBusy {
-        val r = api.post("/auth/link", JSONObject().put("link", link.trim()).put("device", deviceLabel), auth = false)
+        val r = api.post("/auth/link", JSONObject().put("link", link.trim()), auth = false)
         val newId = r.getJSONObject("profile").getLong("id")
         val oldId = _ui.value.me?.profileId
         if (oldId != null && oldId != newId) {

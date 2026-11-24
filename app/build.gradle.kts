@@ -59,6 +59,8 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             // без keystore/keystore.properties сборка выходит неподписанной (app-release-unsigned.apk)
             if (signProps.isNotEmpty()) signingConfig = signingConfigs.getByName("release")
+            // без хеша коммита git в APK: сборка из клона совпадает с выложенной
+            vcsInfo.include = false
         }
     }
     compileOptions {
@@ -68,6 +70,11 @@ android {
     kotlinOptions { jvmTarget = "17" }
     buildFeatures { compose = true; buildConfig = true }
     packaging { jniLibs { useLegacyPackaging = true } }
+    // без зашифрованного для Google Play списка библиотек в блоке подписи APK
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
 }
 
 dependencies {
